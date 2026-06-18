@@ -1,0 +1,16 @@
+# Local agent / editor
+.claude/
+
+# Secrets
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Data (raw pulls/scrapes kept local)
+data/raw/
