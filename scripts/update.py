@@ -21,15 +21,29 @@ def _outcome(actual_home, actual_away):
     return "draw"
 
 
-def run_pipeline(matches: pd.DataFrame, bracket: dict | None = None) -> dict:
+def run_pipeline(
+    matches: pd.DataFrame,
+    history: pd.DataFrame | None = None,
+    bracket: dict | None = None,
+) -> dict:
     # Guarantee datetime dtype: concatenating live data with an empty results.csv
     # frame can coerce the date column to object, which breaks vectorized .dt access.
     matches = matches.copy()
     matches["date"] = pd.to_datetime(matches["date"], utc=True)
-    finished = matches[matches.status == "FINISHED"].dropna(subset=["home_goals", "away_goals"])
-    feats, elo = build_features(matches)
 
-    dc = DixonColes().fit(finished)
+    # Train on historical internationals + WC2026 finished games so team strengths
+    # are identifiable. Predictions still target WC2026 fixtures only.
+    wc_finished = matches[matches.status == "FINISHED"].dropna(subset=["home_goals", "away_goals"])
+    if history is not None and len(history):
+        history = history.copy()
+        history["date"] = pd.to_datetime(history["date"], utc=True)
+        train = pd.concat([history, wc_finished], ignore_index=True).sort_values("date")
+    else:
+        train = wc_finished
+    train = train.reset_index(drop=True)
+
+    feats, elo = build_features(train)
+    dc = DixonColes().fit(train)
     ml = GoalsML(FEATURES).fit(feats)
 
     def predict_blended(home, away, w, neutral=True):
@@ -71,7 +85,8 @@ def run_pipeline(matches: pd.DataFrame, bracket: dict | None = None) -> dict:
         "log_loss": evaluate.log_loss(best_preds, actuals),
         "brier": evaluate.brier(best_preds, actuals),
         "blend_weight": best_w,
-        "n_train": len(finished),
+        "n_train": len(train),
+        "n_wc_finished": int(len(wc_finished)),
     }
     calib = evaluate.calibration_bins(best_preds, actuals)
 
@@ -81,7 +96,12 @@ def run_pipeline(matches: pd.DataFrame, bracket: dict | None = None) -> dict:
     # this is an accepted limitation of the MVP for the scheduling path only.
     # football-data.org marks not-yet-played fixtures TIMED (kickoff set) or
     # SCHEDULED (date only); both are "upcoming".
-    upcoming = matches[matches.status.isin(["SCHEDULED", "TIMED"])]
+    # Knockout fixtures whose teams aren't decided yet carry null team names; skip them.
+    upcoming = matches[
+        matches.status.isin(["SCHEDULED", "TIMED"])
+        & matches.home.notna()
+        & matches.away.notna()
+    ]
     next_rows = []
     for r in upcoming.itertuples():
         lh, la = predict_blended(r.home, r.away, best_w)
@@ -136,14 +156,21 @@ def run_pipeline(matches: pd.DataFrame, bracket: dict | None = None) -> dict:
 
 
 def main():
-    from predictor.ingest import fetch_wc_matches, load_results, merge_results, save_results
+    from predictor.ingest import (
+        fetch_wc_matches,
+        fetch_historical_results,
+        load_results,
+        merge_results,
+        save_results,
+    )
 
     live = fetch_wc_matches()
     merged = merge_results(load_results(), live)
     save_results(merged)
+    history = fetch_historical_results()
     # bracket construction from current knockout fixtures is added when WC2026 reaches knockouts;
     # until then run without simulation.
-    run_pipeline(merged, bracket=None)
+    run_pipeline(merged, history=history, bracket=None)
 
 
 if __name__ == "__main__":

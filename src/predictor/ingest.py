@@ -31,6 +31,44 @@ def fetch_wc_matches() -> pd.DataFrame:
     resp.raise_for_status()
     return parse_matches(resp.json())
 
+# Reconcile historical-dataset team names to football-data.org spellings so the
+# WC2026 fixtures map onto their historical strength estimates.
+HIST_NAME_MAP = {
+    "Bosnia and Herzegovina": "Bosnia-Herzegovina",
+    "Cape Verde": "Cape Verde Islands",
+    "DR Congo": "Congo DR",
+    "Czech Republic": "Czechia",
+}
+
+def parse_historical(df: pd.DataFrame) -> pd.DataFrame:
+    """Map a raw martj42 international-results frame (date, home_team, away_team,
+    home_score, away_score, neutral) to the canonical match schema."""
+    out = pd.DataFrame({
+        "date": pd.to_datetime(df["date"], utc=True),
+        "home": df["home_team"].replace(HIST_NAME_MAP),
+        "away": df["away_team"].replace(HIST_NAME_MAP),
+        "home_goals": pd.to_numeric(df["home_score"], errors="coerce"),
+        "away_goals": pd.to_numeric(df["away_score"], errors="coerce"),
+        "neutral": df["neutral"].astype(bool),
+        "stage": "HISTORICAL",
+        "status": "FINISHED",
+    }, columns=COLUMNS)
+    return out.dropna(subset=["home_goals", "away_goals"]).reset_index(drop=True)
+
+def fetch_historical_results(since_year: int = config.HIST_SINCE_YEAR) -> pd.DataFrame:
+    """Load international results since `since_year`. Downloads the maintained CSV
+    (no auth) and caches it; falls back to the cache if the network is unavailable."""
+    try:
+        raw = pd.read_csv(config.HIST_RESULTS_URL)
+        config.HIST_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        raw.to_csv(config.HIST_CACHE, index=False)
+    except Exception:
+        if not config.HIST_CACHE.exists():
+            raise
+        raw = pd.read_csv(config.HIST_CACHE)
+    parsed = parse_historical(raw)
+    return parsed[parsed["date"].dt.year >= since_year].reset_index(drop=True)
+
 def merge_results(existing: pd.DataFrame, new: pd.DataFrame) -> pd.DataFrame:
     """Union on (date, home, away); new rows win (carry latest scores/status)."""
     key = ["date","home","away"]
