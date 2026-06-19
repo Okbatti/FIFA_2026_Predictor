@@ -1,0 +1,78 @@
+{
+  "log_loss": 10.930521565178326,
+  "brier": 3473431299862.851,
+  "blend_weight": 1.0,
+  "n_train": 28,
+  "calibration": [
+    {
+      "lo": 0.0,
+      "hi": 0.1,
+      "mean_pred": 0.0,
+      "obs_freq": 0.0,
+      "n": 2
+    },
+    {
+      "lo": 0.1,
+      "hi": 0.2,
+      "mean_pred": null,
+      "obs_freq": null,
+      "n": 0
+    },
+    {
+      "lo": 0.2,
+      "hi": 0.30000000000000004,
+      "mean_pred": null,
+      "obs_freq": null,
+      "n": 0
+    },
+    {
+      "lo": 0.30000000000000004,
+      "hi": 0.4,
+      "mean_pred": null,
+      "obs_freq": null,
+      "n": 0
+    },
+    {
+      "lo": 0.4,
+      "hi": 0.5,
+      "mean_pred": null,
+      "obs_freq": null,
+      "n": 0
+    },
+    {
+      "lo": 0.5,
+      "hi": 0.6000000000000001,
+      "mean_pred": null,
+      "obs_freq": null,
+      "n": 0
+    },
+    {
+      "lo": 0.6000000000000001,
+      "hi": 0.7000000000000001,
+      "mean_pred": 0.6540285012478632,
+      "obs_freq": 1.0,
+      "n": 3
+    },
+    {
+      "lo": 0.7000000000000001,
+      "hi": 0.8,
+      "mean_pred": null,
+      "obs_freq": null,
+      "n": 0
+    },
+    {
+      "lo": 0.8,
+      "hi": 0.9,
+      "mean_pred": 0.8496767401051721,
+      "obs_freq": 1.0,
+      "n": 2
+    },
+    {
+      "lo": 0.9,
+      "hi": 1.0,
+      "mean_pred": 0.9501929572549058,
+      "obs_freq": 1.0,
+      "n": 1
+    }
+  ]
+}
