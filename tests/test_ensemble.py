@@ -19,3 +19,14 @@ def test_top_scorelines_sorted():
     tops = top_scorelines(g, k=3)
     assert len(tops) == 3
     assert tops[0][1] >= tops[1][1] >= tops[2][1]
+
+def test_extreme_lambdas_stay_valid():
+    # Underdetermined fits can emit huge/tiny lambdas; the grid must still be a
+    # valid probability distribution (sums to 1, all finite, in [0,1]).
+    for lh, la in [(500.0, 0.0001), (0.0, 0.0), (1e6, 1e6)]:
+        g = score_grid(lh, la, rho=-0.05)
+        assert np.isfinite(g).all()
+        assert (g >= 0).all()
+        assert abs(g.sum() - 1.0) < 1e-9
+        p = outcome_probs(g)
+        assert abs(p["home"] + p["draw"] + p["away"] - 1.0) < 1e-9
