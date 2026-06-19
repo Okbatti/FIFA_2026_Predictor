@@ -19,6 +19,7 @@ jobs:
       - name: Run pipeline
         env:
           FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+          PYTHONPATH: src
         run: python scripts/update.py
       - name: Commit artifacts
         run: |

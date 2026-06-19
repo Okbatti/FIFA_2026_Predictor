@@ -37,6 +37,13 @@ class DixonColes:
         hi = df.home.map(idx).to_numpy(); ai = df.away.map(idx).to_numpy()
         neutral = df.neutral.to_numpy(bool)
 
+        # Precompute the low-score corner masks once — vectorizes the Dixon-Coles
+        # tau correction so fit() scales to thousands of historical matches.
+        m00 = (hg == 0) & (ag == 0)
+        m01 = (hg == 0) & (ag == 1)
+        m10 = (hg == 1) & (ag == 0)
+        m11 = (hg == 1) & (ag == 1)
+
         # params: attack[n], defense[n], home_adv, rho  (attack[0] fixed via sum-to-zero)
         def unpack(p):
             atk = np.concatenate([[ -p[:n-1].sum() ], p[:n-1]])  # sum-to-zero identifiability
@@ -48,7 +55,11 @@ class DixonColes:
             log_lh = atk[hi] - dfn[ai] + np.where(neutral, 0.0, hadv)
             log_la = atk[ai] - dfn[hi]
             lh = np.exp(log_lh); la = np.exp(log_la)
-            t = np.array([tau(h,a,l1,l2,rho) for h,a,l1,l2 in zip(hg,ag,lh,la)])
+            t = np.ones_like(lh)
+            t = np.where(m00, 1 - lh * la * rho, t)
+            t = np.where(m01, 1 + lh * rho, t)
+            t = np.where(m10, 1 + la * rho, t)
+            t = np.where(m11, 1 - rho, t)
             t = np.clip(t, 1e-6, None)
             ll = np.log(t) + hg*log_lh - lh + ag*log_la - la
             return -(w * ll).sum()

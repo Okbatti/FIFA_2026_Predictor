@@ -15,6 +15,14 @@ FOOTBALL_DATA_KEY = os.getenv("FOOTBALL_DATA_KEY", "")
 FOOTBALL_DATA_BASE = "https://api.football-data.org/v4"
 WC2026_COMPETITION = "WC"  # football-data.org competition code
 
+# Historical international results (no-auth, maintained CSV) used to train the
+# models so team strengths are identifiable before WC2026 accumulates games.
+HIST_RESULTS_URL = (
+    "https://raw.githubusercontent.com/martj42/international_results/master/results.csv"
+)
+HIST_SINCE_YEAR = 2021  # training window for international history
+HIST_CACHE = RAW / "international_results.csv"
+
 # Model params
 ELO_K = 30.0
 ELO_HOME_ADV = 65.0          # rating points added to home side (0 for neutral)
