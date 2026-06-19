@@ -27,3 +27,14 @@ def test_pipeline_writes_artifacts(tmp_path, monkeypatch):
     assert (tmp_path / "next_games.parquet").exists()
     assert (tmp_path / "meta.json").exists()
     assert "log_loss" in artifacts["metrics"]
+
+def test_pipeline_handles_object_dtype_dates(tmp_path, monkeypatch):
+    # Live data merged with an empty results.csv frame can leave date as object dtype;
+    # run_pipeline must coerce it rather than crashing on the .dt accessor.
+    monkeypatch.setattr(config, "ARTIFACTS", tmp_path)
+    monkeypatch.setattr(config, "SIM_N", 200)
+    m = _matches()
+    m["date"] = m["date"].astype(object)
+    assert m["date"].dtype == object
+    artifacts = run_pipeline(m, bracket={"rounds":[[("A","B")],[]]})
+    assert "log_loss" in artifacts["metrics"]

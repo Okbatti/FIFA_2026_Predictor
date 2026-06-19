@@ -22,6 +22,10 @@ def _outcome(actual_home, actual_away):
 
 
 def run_pipeline(matches: pd.DataFrame, bracket: dict | None = None) -> dict:
+    # Guarantee datetime dtype: concatenating live data with an empty results.csv
+    # frame can coerce the date column to object, which breaks vectorized .dt access.
+    matches = matches.copy()
+    matches["date"] = pd.to_datetime(matches["date"], utc=True)
     finished = matches[matches.status == "FINISHED"].dropna(subset=["home_goals", "away_goals"])
     feats, elo = build_features(matches)
 
