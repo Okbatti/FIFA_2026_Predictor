@@ -79,7 +79,9 @@ def run_pipeline(matches: pd.DataFrame, bracket: dict | None = None) -> dict:
     # NOTE: predict_blended uses post-match elo.rating() and hardcoded form/rest (1.3/1.3/0)
     # for future fixtures — form and rest are genuinely unknown for upcoming opponents, so
     # this is an accepted limitation of the MVP for the scheduling path only.
-    upcoming = matches[matches.status == "SCHEDULED"]
+    # football-data.org marks not-yet-played fixtures TIMED (kickoff set) or
+    # SCHEDULED (date only); both are "upcoming".
+    upcoming = matches[matches.status.isin(["SCHEDULED", "TIMED"])]
     next_rows = []
     for r in upcoming.itertuples():
         lh, la = predict_blended(r.home, r.away, best_w)
