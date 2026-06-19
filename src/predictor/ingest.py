@@ -4,7 +4,6 @@ import requests
 from predictor import config
 
 COLUMNS = ["date","home","away","home_goals","away_goals","neutral","stage","status"]
-NEUTRAL_STAGES = {"GROUP_STAGE"}  # WC2026 is at neutral venues; host games handled by host-flag later
 
 def parse_matches(raw: dict) -> pd.DataFrame:
     rows = []

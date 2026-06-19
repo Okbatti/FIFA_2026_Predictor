@@ -77,6 +77,12 @@ streamlit run app/streamlit_app.py
 
 ---
 
+## Limitations
+
+- **In-sample metrics:** The reported log-loss, Brier score, and blend weight are computed on the same finished games the models were trained on (in-sample / training metrics). They should be interpreted as lower bounds on true generalisation error. A time-series holdout evaluation is a planned follow-up.
+
+---
+
 ## Tests
 
 ```bash

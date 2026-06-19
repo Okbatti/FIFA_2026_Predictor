@@ -30,6 +30,9 @@ def build_features(matches: pd.DataFrame, seed_ratings: dict[str, float] | None 
         rest_home = (m["date"] - last_date.get(home, m["date"])).days
         rest_away = (m["date"] - last_date.get(away, m["date"])).days
         rows.append({
+            "home": home,
+            "away": away,
+            "date": m["date"],
             "elo_diff": elo_diff,
             "home_form": _rolling_form(goals_for.get(home, [])),
             "away_form": _rolling_form(goals_for.get(away, [])),

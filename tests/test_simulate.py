@@ -29,6 +29,30 @@ def test_simulate_probabilities_sum_per_stage():
 
 def test_make_sampler_draws_goals():
     rng = np.random.default_rng(0)
-    s = make_sampler(lambda h,a: (1.5, 1.0), rng)
-    hg, ag = s("A","B")
-    assert hg >= 0 and ag >= 0
+    s = make_sampler(lambda h,a: (2.0, 0.5), rng)
+    draws = [s("A","B") for _ in range(2000)]
+    mean_h = sum(d[0] for d in draws)/len(draws)
+    mean_a = sum(d[1] for d in draws)/len(draws)
+    assert mean_h > mean_a            # reflects lambda_home > lambda_away
+    assert 1.6 < mean_h < 2.4         # ~2.0
+
+
+def test_partial_bracket_no_phantom_stage_credit():
+    # 8 teams, 3 rounds: QF -> SF -> FINAL. Home always wins.
+    bracket = {"rounds": [
+        [("A","B"),("C","D"),("E","F"),("G","H")],  # QF
+        [], [],                                       # SF, FINAL filled by winners
+    ]}
+    sampler = lambda h,a: (2,0)
+    probs = simulate_bracket(bracket, sampler, n=300)
+    # Only QF, SF, FINAL, win stages should exist — never R16
+    assert "R16" not in probs["A"]
+    assert set(probs["A"].keys()) == {"QF","SF","FINAL","win"}
+    # Teams that only ever play as 'away' (B,D,F,H) are eliminated in QF
+    assert probs["B"]["QF"] == 1.0
+    assert probs["B"]["SF"] == 0.0
+    assert probs["B"]["win"] == 0.0
+    # A is always home, wins everything
+    assert probs["A"]["win"] == 1.0
+    # exactly one champion
+    assert abs(sum(v["win"] for v in probs.values()) - 1.0) < 1e-9

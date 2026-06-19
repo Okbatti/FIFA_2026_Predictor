@@ -48,6 +48,7 @@ with tab2:
 with tab3:
     metrics = _load_json("metrics.json")
     if metrics:
+        st.caption("Metrics are in-sample (training) estimates — see README limitations.")
         c = st.columns(3)
         c[0].metric("Log-loss", f"{metrics.get('log_loss',0):.3f}")
         c[1].metric("Brier", f"{metrics.get('brier',0):.3f}")

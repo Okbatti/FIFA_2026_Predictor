@@ -40,27 +40,41 @@ def run_pipeline(matches: pd.DataFrame, bracket: dict | None = None) -> dict:
         ml_l = ml.predict_lambdas(feat_row)
         return blend_lambdas(dc_l, ml_l, w)
 
-    # tune blend weight on finished games (predict each from model, compare to actual)
-    actuals = [_outcome(r.home_goals, r.away_goals) for r in finished.itertuples()]
+    # tune blend weight on finished games using pre-match features from feats
+    # (feats rows carry the actual pre-match elo_diff/form/rest, avoiding the
+    #  train/serve mismatch that would arise from using post-match elo.rating())
+    actuals = [_outcome(r.home_goals, r.away_goals) for r in feats.itertuples()]
 
     def preds_for_w(w):
         out = []
-        for r in finished.itertuples():
-            lh, la = predict_blended(r.home, r.away, w)
+        for row in feats.itertuples():
+            ml_l = ml.predict_lambdas({
+                "elo_diff": row.elo_diff,
+                "home_form": row.home_form,
+                "away_form": row.away_form,
+                "rest_diff": row.rest_diff,
+            })
+            dc_l = dc.predict_lambdas(row.home, row.away)
+            lh, la = blend_lambdas(dc_l, ml_l, w)
             out.append(outcome_probs(score_grid(lh, la, rho=dc.rho)))
         return out
 
     best_w = evaluate.pick_best_weight(preds_for_w, actuals, grid=[0.3, 0.5, 0.7, 0.9, 1.0])
 
+    # Cache best predictions once; reuse for all metrics (avoid triple recomputation)
+    best_preds = preds_for_w(best_w)
     metrics = {
-        "log_loss": evaluate.log_loss(preds_for_w(best_w), actuals),
-        "brier": evaluate.brier(preds_for_w(best_w), actuals),
+        "log_loss": evaluate.log_loss(best_preds, actuals),
+        "brier": evaluate.brier(best_preds, actuals),
         "blend_weight": best_w,
         "n_train": len(finished),
     }
-    calib = evaluate.calibration_bins(preds_for_w(best_w), actuals)
+    calib = evaluate.calibration_bins(best_preds, actuals)
 
     # next games (scheduled)
+    # NOTE: predict_blended uses post-match elo.rating() and hardcoded form/rest (1.3/1.3/0)
+    # for future fixtures — form and rest are genuinely unknown for upcoming opponents, so
+    # this is an accepted limitation of the MVP for the scheduling path only.
     upcoming = matches[matches.status == "SCHEDULED"]
     next_rows = []
     for r in upcoming.itertuples():
