@@ -14,32 +14,34 @@ import streamlit as st
 ART = Path(__file__).resolve().parents[1] / "artifacts"
 
 # ---------------------------------------------------------------- flag lookup
-_FLAGS = {
-    "Argentina": "🇦🇷", "Brazil": "🇧🇷", "France": "🇫🇷", "Spain": "🇪🇸",
-    "England": "🏴\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f",
-    "Germany": "🇩🇪", "Portugal": "🇵🇹", "Netherlands": "🇳🇱", "Belgium": "🇧🇪",
-    "Italy": "🇮🇹", "Croatia": "🇭🇷", "Uruguay": "🇺🇾", "Colombia": "🇨🇴",
-    "Mexico": "🇲🇽", "United States": "🇺🇸", "Canada": "🇨🇦", "Japan": "🇯🇵",
-    "South Korea": "🇰🇷", "Korea Republic": "🇰🇷", "Morocco": "🇲🇦",
-    "Senegal": "🇸🇳", "Ivory Coast": "🇨🇮", "Cote d'Ivoire": "🇨🇮",
-    "Nigeria": "🇳🇬", "Ghana": "🇬🇭", "Cameroon": "🇨🇲", "Egypt": "🇪🇬",
-    "Tunisia": "🇹🇳", "Algeria": "🇩🇿", "South Africa": "🇿🇦", "Cape Verde Islands": "🇨🇻",
-    "Congo DR": "🇨🇩", "Australia": "🇦🇺", "Saudi Arabia": "🇸🇦", "Iran": "🇮🇷",
-    "Qatar": "🇶🇦", "Jordan": "🇯🇴", "Uzbekistan": "🇺🇿", "Switzerland": "🇨🇭",
-    "Denmark": "🇩🇰", "Sweden": "🇸🇪", "Norway": "🇳🇴", "Poland": "🇵🇱",
-    "Austria": "🇦🇹", "Scotland": "🏴\U000e0067\U000e0062\U000e0073\U000e0063\U000e0074\U000e007f",
-    "Turkey": "🇹🇷", "Türkiye": "🇹🇷", "Ukraine": "🇺🇦", "Serbia": "🇷🇸",
-    "Czechia": "🇨🇿", "Bosnia-Herzegovina": "🇧🇦", "Wales": "🏴\U000e0067\U000e0062\U000e0077\U000e006c\U000e0073\U000e007f",
-    "Ecuador": "🇪🇨", "Paraguay": "🇵🇾", "Peru": "🇵🇪", "Chile": "🇨🇱",
-    "Panama": "🇵🇦", "Costa Rica": "🇨🇷", "Honduras": "🇭🇳", "Jamaica": "🇯🇲",
-    "Haiti": "🇭🇹", "Curaçao": "🇨🇼", "New Zealand": "🇳🇿", "Greece": "🇬🇷",
+# Team -> ISO 3166-1 code for flagcdn.com (free, public-domain flag images).
+_ISO = {
+    "Argentina": "ar", "Brazil": "br", "France": "fr", "Spain": "es",
+    "England": "gb-eng", "Germany": "de", "Portugal": "pt", "Netherlands": "nl",
+    "Belgium": "be", "Italy": "it", "Croatia": "hr", "Uruguay": "uy",
+    "Colombia": "co", "Mexico": "mx", "United States": "us", "Canada": "ca",
+    "Japan": "jp", "South Korea": "kr", "Korea Republic": "kr", "Morocco": "ma",
+    "Senegal": "sn", "Ivory Coast": "ci", "Cote d'Ivoire": "ci", "Nigeria": "ng",
+    "Ghana": "gh", "Cameroon": "cm", "Egypt": "eg", "Tunisia": "tn",
+    "Algeria": "dz", "South Africa": "za", "Cape Verde Islands": "cv", "Congo DR": "cd",
+    "Australia": "au", "Saudi Arabia": "sa", "Iran": "ir", "Qatar": "qa",
+    "Jordan": "jo", "Uzbekistan": "uz", "Switzerland": "ch", "Denmark": "dk",
+    "Sweden": "se", "Norway": "no", "Poland": "pl", "Austria": "at",
+    "Scotland": "gb-sct", "Turkey": "tr", "Türkiye": "tr", "Ukraine": "ua",
+    "Serbia": "rs", "Czechia": "cz", "Bosnia-Herzegovina": "ba", "Wales": "gb-wls",
+    "Ecuador": "ec", "Paraguay": "py", "Peru": "pe", "Chile": "cl",
+    "Panama": "pa", "Costa Rica": "cr", "Honduras": "hn", "Jamaica": "jm",
+    "Haiti": "ht", "Curaçao": "cw", "New Zealand": "nz", "Greece": "gr",
 }
 
 
 def flag(team: str | None) -> str:
-    if not isinstance(team, str):
-        return "⚽"
-    return _FLAGS.get(team, "⚽")
+    """Real flag image from flagcdn.com, or a neutral initials badge if unknown."""
+    code = _ISO.get(team) if isinstance(team, str) else None
+    if code:
+        return f"<img class='fimg' src='https://flagcdn.com/h40/{code}.png' alt='' loading='lazy'>"
+    initials = (team[:2].upper() if isinstance(team, str) and team else "??")
+    return f"<span class='fph'>{initials}</span>"
 
 
 # ---------------------------------------------------------------- page + style
@@ -48,6 +50,21 @@ st.set_page_config(page_title="WC2026 Predictor", page_icon="🏆", layout="wide
 _GRAIN = ("url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E"
           "%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E"
           "%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")")
+
+_TROPHY = (
+    "<svg viewBox='0 0 24 24' fill='none' stroke='#c6ff3a' stroke-width='1.5' "
+    "stroke-linecap='round' stroke-linejoin='round'>"
+    "<path d='M7 4h10v5a5 5 0 0 1-10 0V4z'/>"
+    "<path d='M7 6H4.5v1.6A3 3 0 0 0 7.6 10.6'/>"
+    "<path d='M17 6h2.5v1.6A3 3 0 0 1 16.4 10.6'/>"
+    "<path d='M12 14v3'/><path d='M10 20.6h4l-.4-3.4h-3.2z'/></svg>"
+)
+_BALL = (
+    "<svg viewBox='0 0 24 24' fill='none' stroke='#eafff4' stroke-width='1.4' stroke-linejoin='round'>"
+    "<circle cx='12' cy='12' r='9'/>"
+    "<path d='M12 6.6l3.2 2.3-1.2 3.9H10l-1.2-3.9z'/>"
+    "<path d='M12 6.6V3.1M15.2 8.9l3.2-1M14 12.8l2.2 3M10 12.8l-2.2 3M8.8 8.9l-3.2-1'/></svg>"
+)
 
 st.markdown(
     "<link href='https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap' rel='stylesheet'>"
@@ -106,9 +123,14 @@ st.markdown(
     ".stat .label{font-family:'Outfit';text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-size:.72rem;font-weight:600;}"
     ".stat .val{font-family:'Syne';font-weight:800;font-size:2.3rem;color:var(--volt);line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 0 22px rgba(198,255,58,.4);}"
     ".stat .sub{font-family:'Outfit';font-size:.76rem;color:var(--muted);}"
+    ".fimg{height:24px;width:auto;border-radius:3px;box-shadow:0 2px 8px rgba(0,0,0,.55);display:inline-block;vertical-align:middle;}"
+    ".lb .lf .fimg{height:28px;}"
+    ".fph{display:inline-flex;align-items:center;justify-content:center;width:34px;height:24px;border-radius:3px;background:rgba(255,255,255,.10);border:1px solid var(--glassb);font-family:'Outfit';font-weight:700;font-size:.7rem;color:var(--muted);vertical-align:middle;}"
     ".rail{position:fixed;top:0;bottom:0;width:clamp(0px,calc((100vw - 960px)/2),330px);z-index:1;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:46px 0;overflow:hidden;}"
     ".rail.l{left:0;}.rail.r{right:0;}"
-    ".rail .glyph{font-size:3.4rem;filter:drop-shadow(0 0 22px rgba(198,255,58,.35));opacity:.8;}"
+    ".rail .glyph{filter:drop-shadow(0 0 22px rgba(198,255,58,.35));opacity:.9;}"
+    ".rail .glyph svg{width:48px;height:48px;}"
+    ".rail .hosts .fimg{height:18px;border-radius:2px;}"
     ".rail .vtext{writing-mode:vertical-rl;font-family:'Syne';font-weight:800;font-size:2.5rem;letter-spacing:.12em;color:rgba(198,255,58,.12);text-transform:uppercase;white-space:nowrap;}"
     ".rail.r .vtext{transform:rotate(180deg);}"
     ".rail .foot{display:flex;flex-direction:column;align-items:center;gap:8px;}"
@@ -118,10 +140,11 @@ st.markdown(
     "@media(max-width:1100px){.rail{display:none;}}"
     "</style>"
     "<div class='bgpitch'><div class='circle'><div class='spot'></div></div></div>"
-    "<div class='rail l'><div class='glyph'>🏆</div>"
+    "<div class='rail l'><div class='glyph'>" + _TROPHY + "</div>"
     "<div class='vtext'>FIFA World Cup</div>"
-    "<div class='foot'><div class='hosts'>🇨🇦 🇺🇸 🇲🇽</div><div class='lab'>Hosts · 2026</div></div></div>"
-    "<div class='rail r'><div class='glyph'>⚽</div>"
+    "<div class='foot'><div class='hosts'>" + flag("Canada") + flag("United States") + flag("Mexico")
+    + "</div><div class='lab'>Hosts · 2026</div></div></div>"
+    "<div class='rail r'><div class='glyph'>" + _BALL + "</div>"
     "<div class='vtext'>Monte Carlo · Forecast</div>"
     "<div class='foot'><div class='stat2'>48<br>teams</div><div class='lab'>104 matches</div></div></div>",
     unsafe_allow_html=True,
