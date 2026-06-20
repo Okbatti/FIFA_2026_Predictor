@@ -43,7 +43,7 @@ def flag(team: str | None) -> str:
 
 
 # ---------------------------------------------------------------- page + style
-st.set_page_config(page_title="WC2026 Predictor", page_icon="🏆", layout="centered")
+st.set_page_config(page_title="WC2026 Predictor", page_icon="🏆", layout="wide")
 
 _GRAIN = ("url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E"
           "%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E"
@@ -61,7 +61,7 @@ st.markdown(
     ".bgpitch .circle{width:560px;height:560px;border:2px solid var(--ink);border-radius:50%;position:relative;}"
     ".bgpitch .circle:before{content:'';position:absolute;left:50%;top:-100vh;width:2px;height:300vh;background:var(--ink);transform:translateX(-50%);}"
     ".bgpitch .spot{width:14px;height:14px;background:var(--ink);border-radius:50%;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);}"
-    "[data-testid='stMain'] .block-container{position:relative;z-index:2;max-width:880px;padding-top:2.2rem;}"
+    "[data-testid='stMain'] .block-container{position:relative;z-index:2;max-width:900px;margin:0 auto;padding-top:2.2rem;}"
     "h1,h2,h3,h4{font-family:'Syne',sans-serif !important;color:var(--ink);letter-spacing:-.01em;}"
     "#MainMenu,header,footer{visibility:hidden;}"
     ".hero{position:relative;overflow:hidden;border-radius:22px;padding:30px 30px 26px;background:linear-gradient(135deg,rgba(46,230,176,.10),rgba(108,140,255,.06));border:1px solid var(--glassb);backdrop-filter:blur(8px);}"
@@ -106,8 +106,24 @@ st.markdown(
     ".stat .label{font-family:'Outfit';text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-size:.72rem;font-weight:600;}"
     ".stat .val{font-family:'Syne';font-weight:800;font-size:2.3rem;color:var(--volt);line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 0 22px rgba(198,255,58,.4);}"
     ".stat .sub{font-family:'Outfit';font-size:.76rem;color:var(--muted);}"
+    ".rail{position:fixed;top:0;bottom:0;width:clamp(0px,calc((100vw - 960px)/2),330px);z-index:1;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:46px 0;overflow:hidden;}"
+    ".rail.l{left:0;}.rail.r{right:0;}"
+    ".rail .glyph{font-size:3.4rem;filter:drop-shadow(0 0 22px rgba(198,255,58,.35));opacity:.8;}"
+    ".rail .vtext{writing-mode:vertical-rl;font-family:'Syne';font-weight:800;font-size:2.5rem;letter-spacing:.12em;color:rgba(198,255,58,.12);text-transform:uppercase;white-space:nowrap;}"
+    ".rail.r .vtext{transform:rotate(180deg);}"
+    ".rail .foot{display:flex;flex-direction:column;align-items:center;gap:8px;}"
+    ".rail .hosts{font-size:1.5rem;letter-spacing:4px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}"
+    ".rail .lab{font-family:'Outfit';font-weight:600;text-transform:uppercase;letter-spacing:.2em;font-size:.64rem;color:var(--muted);}"
+    ".rail .stat2{font-family:'Syne';font-weight:800;font-size:1.5rem;color:rgba(234,255,244,.55);text-align:center;line-height:1;}"
+    "@media(max-width:1100px){.rail{display:none;}}"
     "</style>"
-    "<div class='bgpitch'><div class='circle'><div class='spot'></div></div></div>",
+    "<div class='bgpitch'><div class='circle'><div class='spot'></div></div></div>"
+    "<div class='rail l'><div class='glyph'>🏆</div>"
+    "<div class='vtext'>FIFA World Cup</div>"
+    "<div class='foot'><div class='hosts'>🇨🇦 🇺🇸 🇲🇽</div><div class='lab'>Hosts · 2026</div></div></div>"
+    "<div class='rail r'><div class='glyph'>⚽</div>"
+    "<div class='vtext'>Monte Carlo · Forecast</div>"
+    "<div class='foot'><div class='stat2'>48<br>teams</div><div class='lab'>104 matches</div></div></div>",
     unsafe_allow_html=True,
 )
 
