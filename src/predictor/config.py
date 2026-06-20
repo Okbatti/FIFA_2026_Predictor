@@ -29,7 +29,10 @@ ELO_HOME_ADV = 65.0          # rating points added to home side (0 for neutral)
 DC_HISTORY_YEARS = 4
 BLEND_WEIGHT_DEFAULT = 0.7    # w: weight on Dixon-Coles vs ML
 MAX_GOALS_GRID = 10           # bivariate Poisson grid size
-SIM_N = 20000
+# Tournament Monte Carlo draws. 5000 gives title-odds resolution ~0.6% while
+# keeping the nightly run ~8 min (the sim is a pure-Python loop over groups +
+# knockouts; raising this scales runtime roughly linearly).
+SIM_N = 5000
 
 for d in (RAW, PROCESSED, ARTIFACTS):
     d.mkdir(parents=True, exist_ok=True)

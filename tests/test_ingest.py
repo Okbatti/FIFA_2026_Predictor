@@ -8,7 +8,7 @@ FIX = Path(__file__).parent / "fixtures" / "sample_matches.json"
 def test_parse_matches_schema():
     raw = json.loads(FIX.read_text())
     df = parse_matches(raw)
-    assert list(df.columns) == ["date","home","away","home_goals","away_goals","neutral","stage","status"]
+    assert list(df.columns) == ["date","home","away","home_goals","away_goals","neutral","stage","status","group"]
     assert len(df) == 2
 
 def test_parse_finished_vs_scheduled():
