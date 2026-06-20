@@ -21,7 +21,7 @@ def _matches():
 def test_pipeline_writes_artifacts(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "ARTIFACTS", tmp_path)
     monkeypatch.setattr(config, "SIM_N", 200)
-    artifacts = run_pipeline(_matches(), bracket={"rounds":[[("A","B")],[]]})
+    artifacts = run_pipeline(_matches())
     assert (tmp_path / "metrics.json").exists()
     assert (tmp_path / "cup_odds.parquet").exists()
     assert (tmp_path / "next_games.parquet").exists()
@@ -36,5 +36,5 @@ def test_pipeline_handles_object_dtype_dates(tmp_path, monkeypatch):
     m = _matches()
     m["date"] = m["date"].astype(object)
     assert m["date"].dtype == object
-    artifacts = run_pipeline(m, bracket={"rounds":[[("A","B")],[]]})
+    artifacts = run_pipeline(m)
     assert "log_loss" in artifacts["metrics"]

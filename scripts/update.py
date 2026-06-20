@@ -1,13 +1,12 @@
 from __future__ import annotations
 import json
-import numpy as np
 import pandas as pd
 from predictor import config
 from predictor.features import build_features
 from predictor.models.dixon_coles import DixonColes
 from predictor.models.ml_model import GoalsML
 from predictor.models.ensemble import blend_lambdas, score_grid, outcome_probs, top_scorelines
-from predictor.simulate import simulate_bracket, make_sampler
+from predictor.tournament import simulate_tournament
 from predictor import evaluate
 
 FEATURES = ["elo_diff", "home_form", "away_form", "rest_diff"]
@@ -24,7 +23,7 @@ def _outcome(actual_home, actual_away):
 def run_pipeline(
     matches: pd.DataFrame,
     history: pd.DataFrame | None = None,
-    bracket: dict | None = None,
+    simulate_cup: bool = True,
 ) -> dict:
     # Guarantee datetime dtype: concatenating live data with an empty results.csv
     # frame can coerce the date column to object, which breaks vectorized .dt access.
@@ -119,17 +118,18 @@ def run_pipeline(
         })
     next_df = pd.DataFrame(next_rows)
 
-    # cup odds via simulation
+    # cup odds: full-tournament Monte Carlo from the current state (simulate the
+    # remaining group games, qualification, then the knockout bracket). Returns
+    # {} when the data lacks a 12-group structure (e.g. synthetic test data).
     cup_df = pd.DataFrame()
-    if bracket is not None:
-        # Strip empty rounds (can appear when not all knockout fixtures are known yet)
-        clean_bracket = {"rounds": [r for r in bracket["rounds"] if r]}
-        rng = np.random.default_rng(0)
-        sampler = make_sampler(lambda h, a: predict_blended(h, a, best_w), rng)
-        probs = simulate_bracket(clean_bracket, sampler, n=config.SIM_N)
-        cup_df = pd.DataFrame(
-            [{"team": t, **v} for t, v in probs.items()]
-        ).sort_values("win", ascending=False)
+    if simulate_cup:
+        probs = simulate_tournament(
+            matches, lambda h, a: predict_blended(h, a, best_w), n=config.SIM_N
+        )
+        if probs:
+            cup_df = pd.DataFrame(
+                [{"team": t, **v} for t, v in probs.items()]
+            ).sort_values("win", ascending=False)
 
     rankings = pd.DataFrame(
         [{"team": t, "strength": s, "elo": elo.rating(t)} for t, s in dc.team_strength().items()]
@@ -168,9 +168,7 @@ def main():
     merged = merge_results(load_results(), live)
     save_results(merged)
     history = fetch_historical_results()
-    # bracket construction from current knockout fixtures is added when WC2026 reaches knockouts;
-    # until then run without simulation.
-    run_pipeline(merged, history=history, bracket=None)
+    run_pipeline(merged, history=history)
 
 
 if __name__ == "__main__":

@@ -39,8 +39,9 @@ with tab1:
 with tab2:
     cup = _load_parquet("cup_odds.parquet")
     if cup.empty:
-        st.info("Bracket simulation runs once the knockout stage begins.")
+        st.info("Cup odds appear once group-stage fixtures are available to simulate.")
     else:
+        st.caption("Title/stage probabilities from a full-tournament Monte Carlo of the remaining games.")
         st.dataframe(cup, use_container_width=True)
         fig = px.bar(cup.head(12), x="team", y="win", title="Title probability (top 12)")
         st.plotly_chart(fig, use_container_width=True)

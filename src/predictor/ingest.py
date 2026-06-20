@@ -3,21 +3,24 @@ import pandas as pd
 import requests
 from predictor import config
 
-COLUMNS = ["date","home","away","home_goals","away_goals","neutral","stage","status"]
+COLUMNS = ["date","home","away","home_goals","away_goals","neutral","stage","status","group"]
 
 def parse_matches(raw: dict) -> pd.DataFrame:
     rows = []
     for m in raw.get("matches", []):
         ft = m.get("score", {}).get("fullTime", {})
+        home = m.get("homeTeam") or {}
+        away = m.get("awayTeam") or {}
         rows.append({
             "date": pd.to_datetime(m["utcDate"]),
-            "home": m["homeTeam"]["name"],
-            "away": m["awayTeam"]["name"],
+            "home": home.get("name"),
+            "away": away.get("name"),
             "home_goals": ft.get("home"),
             "away_goals": ft.get("away"),
             "neutral": True,  # World Cup: treat all as neutral by default
             "stage": m.get("stage", "UNKNOWN"),
             "status": m["status"],
+            "group": m.get("group"),  # e.g. GROUP_A; null for knockouts
         })
     df = pd.DataFrame(rows, columns=COLUMNS)
     df["home_goals"] = pd.to_numeric(df["home_goals"], errors="coerce")
