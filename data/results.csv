@@ -27,9 +27,9 @@ date,home,away,home_goals,away_goals,neutral,stage,status
 2026-06-18 19:00:00+00:00,Switzerland,Bosnia-Herzegovina,4.0,1.0,True,GROUP_STAGE,FINISHED
 2026-06-18 22:00:00+00:00,Canada,Qatar,6.0,0.0,True,GROUP_STAGE,FINISHED
 2026-06-19 01:00:00+00:00,Mexico,South Korea,1.0,0.0,True,GROUP_STAGE,FINISHED
-2026-06-19 19:00:00+00:00,United States,Australia,,,True,GROUP_STAGE,TIMED
-2026-06-19 22:00:00+00:00,Scotland,Morocco,,,True,GROUP_STAGE,TIMED
-2026-06-20 00:30:00+00:00,Brazil,Haiti,,,True,GROUP_STAGE,TIMED
+2026-06-19 19:00:00+00:00,United States,Australia,2.0,0.0,True,GROUP_STAGE,FINISHED
+2026-06-19 22:00:00+00:00,Scotland,Morocco,0.0,1.0,True,GROUP_STAGE,FINISHED
+2026-06-20 00:30:00+00:00,Brazil,Haiti,3.0,0.0,True,GROUP_STAGE,FINISHED
 2026-06-20 03:00:00+00:00,Turkey,Paraguay,,,True,GROUP_STAGE,TIMED
 2026-06-20 17:00:00+00:00,Netherlands,Sweden,,,True,GROUP_STAGE,TIMED
 2026-06-20 20:00:00+00:00,Germany,Ivory Coast,,,True,GROUP_STAGE,TIMED
