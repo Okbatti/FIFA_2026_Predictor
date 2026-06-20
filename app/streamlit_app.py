@@ -1,8 +1,8 @@
-"""FIFA World Cup 2026 Predictor — editorial-analytics Streamlit dashboard.
+"""FIFA World Cup 2026 Predictor — atmospheric Streamlit dashboard.
 
 Pure presentation layer: reads the artifacts written by scripts/update.py and
-renders them in a clean editorial style (off-white paper, Fraunces serif
-headlines, electric-blue accent). No model logic.
+renders them over a living gradient-mesh "night pitch" background with glass
+cards, Syne display type and a volt-green accent. No model logic.
 """
 import json
 from pathlib import Path
@@ -45,54 +45,69 @@ def flag(team: str | None) -> str:
 # ---------------------------------------------------------------- page + style
 st.set_page_config(page_title="WC2026 Predictor", page_icon="🏆", layout="centered")
 
+_GRAIN = ("url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E"
+          "%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E"
+          "%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")")
+
 st.markdown(
-    "<link href='https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&display=swap' rel='stylesheet'>"
+    "<link href='https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap' rel='stylesheet'>"
     "<style>"
-    ":root{--paper:#f7f5f0;--panel:#ffffff;--ink:#17171b;--muted:#6f6c63;--line:#e4e0d7;--accent:#1f5eff;--accent-soft:#eaf0ff;--draw:#cfccc2;--away:#e5484d;}"
-    ".stApp{background:var(--paper);color:var(--ink);font-family:'Archivo',sans-serif;}"
-    ".block-container{padding-top:2rem;max-width:840px;}"
-    "h1,h2,h3,h4{font-family:'Fraunces',serif !important;color:var(--ink);letter-spacing:-.01em;}"
+    ":root{--bg0:#04100b;--volt:#c6ff3a;--volt-d:#9bd400;--cyan:#2ee6b0;--blue:#6c8cff;--ink:#eafff4;--muted:#7fa896;--draw:#536b60;--away:#ff5d7a;--glass:rgba(255,255,255,.045);--glassb:rgba(255,255,255,.10);}"
+    ".stApp{background:radial-gradient(120% 120% at 50% -10%,#0a2018 0%,#05130d 45%,#030b07 100%);color:var(--ink);font-family:'Outfit',sans-serif;}"
+    ".stApp:before{content:'';position:fixed;inset:-25%;z-index:0;pointer-events:none;background:radial-gradient(38% 46% at 16% 18%,rgba(46,230,176,.22),transparent 60%),radial-gradient(42% 50% at 86% 12%,rgba(108,140,255,.20),transparent 62%),radial-gradient(46% 54% at 74% 88%,rgba(198,255,58,.14),transparent 60%),radial-gradient(40% 48% at 22% 92%,rgba(46,230,176,.14),transparent 60%);filter:blur(10px);animation:drift 26s ease-in-out infinite alternate;}"
+    "@keyframes drift{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-3%,-2.5%,0) scale(1.12)}}"
+    ".stApp:after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:" + _GRAIN + ";}"
+    ".bgpitch{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:.05;}"
+    ".bgpitch .circle{width:560px;height:560px;border:2px solid var(--ink);border-radius:50%;position:relative;}"
+    ".bgpitch .circle:before{content:'';position:absolute;left:50%;top:-100vh;width:2px;height:300vh;background:var(--ink);transform:translateX(-50%);}"
+    ".bgpitch .spot{width:14px;height:14px;background:var(--ink);border-radius:50%;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);}"
+    "[data-testid='stMain'] .block-container{position:relative;z-index:2;max-width:880px;padding-top:2.2rem;}"
+    "h1,h2,h3,h4{font-family:'Syne',sans-serif !important;color:var(--ink);letter-spacing:-.01em;}"
     "#MainMenu,header,footer{visibility:hidden;}"
-    ".eyebrow{font-family:'Archivo';text-transform:uppercase;letter-spacing:.22em;font-size:.74rem;font-weight:600;color:var(--accent);}"
-    ".display{font-family:'Fraunces',serif;font-weight:600;font-size:3.05rem;line-height:1.0;margin:.18rem 0 .35rem;letter-spacing:-.02em;}"
-    ".display .ital{font-style:italic;font-weight:500;}"
-    ".dek{font-family:'Archivo';color:var(--muted);font-size:1.02rem;max-width:620px;}"
-    ".rule{height:2px;background:var(--ink);margin:1.1rem 0 .5rem;}"
-    ".meta{font-family:'Archivo';font-size:.8rem;color:var(--muted);letter-spacing:.02em;display:flex;gap:14px;flex-wrap:wrap;}"
-    ".meta b{color:var(--ink);font-weight:600;}"
-    ".sec{font-family:'Archivo';text-transform:uppercase;letter-spacing:.16em;font-size:.78rem;font-weight:600;color:var(--muted);margin:1.4rem 0 .7rem;border-bottom:1px solid var(--line);padding-bottom:.4rem;}"
-    ".stTabs [data-baseweb='tab-list']{gap:26px;border-bottom:1px solid var(--line);}"
-    ".stTabs [data-baseweb='tab']{font-family:'Archivo';font-weight:600;font-size:.92rem;letter-spacing:.03em;color:var(--muted);background:transparent;padding:6px 2px;}"
-    ".stTabs [aria-selected='true']{color:var(--ink) !important;border-bottom:2px solid var(--accent);}"
-    ".match{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:12px;box-shadow:0 1px 2px rgba(20,20,20,.04),0 8px 22px rgba(20,20,20,.05);}"
+    ".hero{position:relative;overflow:hidden;border-radius:22px;padding:30px 30px 26px;background:linear-gradient(135deg,rgba(46,230,176,.10),rgba(108,140,255,.06));border:1px solid var(--glassb);backdrop-filter:blur(8px);}"
+    ".hero .ghost{position:absolute;right:-12px;top:-46px;font-family:'Syne';font-weight:800;font-size:13rem;line-height:1;color:rgba(198,255,58,.07);pointer-events:none;}"
+    ".eyebrow{font-family:'Outfit';text-transform:uppercase;letter-spacing:.32em;font-size:.72rem;font-weight:600;color:var(--volt);}"
+    ".display{font-family:'Syne',sans-serif;font-weight:800;font-size:3.1rem;line-height:.98;margin:.3rem 0 .5rem;letter-spacing:-.02em;}"
+    ".display .vt{color:var(--volt);text-shadow:0 0 30px rgba(198,255,58,.45);}"
+    ".dek{font-family:'Outfit';color:var(--muted);font-size:1rem;max-width:600px;line-height:1.5;}"
+    ".meta{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;}"
+    ".tag{font-family:'Outfit';font-size:.76rem;color:var(--ink);background:rgba(255,255,255,.06);border:1px solid var(--glassb);padding:5px 12px;border-radius:999px;}"
+    ".tag b{color:var(--volt);font-weight:600;}"
+    ".sec{font-family:'Syne';text-transform:uppercase;letter-spacing:.14em;font-size:.86rem;font-weight:700;color:var(--muted);margin:1.7rem 0 .8rem;}"
+    ".stTabs [data-baseweb='tab-list']{gap:8px;border-bottom:1px solid var(--glassb);}"
+    ".stTabs [data-baseweb='tab']{font-family:'Syne';font-weight:700;font-size:.92rem;letter-spacing:.02em;color:var(--muted);background:transparent;padding:7px 4px;}"
+    ".stTabs [aria-selected='true']{color:var(--volt) !important;border-bottom:2px solid var(--volt);}"
+    ".match{background:var(--glass);border:1px solid var(--glassb);border-radius:18px;padding:18px 22px;margin-bottom:14px;backdrop-filter:blur(14px) saturate(1.15);box-shadow:0 14px 40px rgba(0,0,0,.45);transition:transform .15s ease,border-color .15s ease;}"
+    ".match:hover{transform:translateY(-2px);border-color:rgba(198,255,58,.35);}"
     ".match .row{display:flex;align-items:center;justify-content:space-between;gap:12px;}"
-    ".match .team{display:flex;align-items:center;gap:11px;flex:1;font-family:'Archivo';font-weight:600;font-size:1.16rem;}"
+    ".match .team{display:flex;align-items:center;gap:12px;flex:1;font-family:'Outfit';font-weight:600;font-size:1.2rem;}"
     ".match .team.away{justify-content:flex-end;text-align:right;}"
-    ".match .flag{font-size:1.7rem;line-height:1;}"
-    ".score{font-family:'Fraunces',serif;font-weight:600;font-size:2.05rem;min-width:96px;text-align:center;color:var(--ink);font-variant-numeric:tabular-nums;border-bottom:3px solid var(--accent);padding-bottom:2px;line-height:1;}"
-    ".score small{display:block;font-family:'Archivo';font-weight:600;font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);border:0;margin-top:5px;}"
-    ".wdl{display:flex;height:9px;border-radius:6px;overflow:hidden;margin-top:15px;background:var(--paper);}"
-    ".wdl span{display:block;}.wdl .w{background:var(--accent);}.wdl .d{background:var(--draw);}.wdl .l{background:var(--away);}"
-    ".legend{display:flex;justify-content:space-between;margin-top:7px;font-family:'Archivo';font-size:.78rem;color:var(--muted);}"
-    ".legend b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;}"
-    ".legend .hp{color:var(--accent);}.legend .ap{color:var(--away);}"
-    ".chips{margin-top:11px;display:flex;gap:7px;flex-wrap:wrap;}"
-    ".chip{font-family:'Archivo';font-size:.76rem;padding:3px 9px;border-radius:6px;background:var(--paper);border:1px solid var(--line);color:var(--muted);font-variant-numeric:tabular-nums;}"
+    ".match .flag{font-size:1.85rem;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}"
+    ".score{font-family:'Syne',sans-serif;font-weight:800;font-size:2.3rem;min-width:108px;text-align:center;color:var(--volt);font-variant-numeric:tabular-nums;text-shadow:0 0 26px rgba(198,255,58,.45);line-height:1;}"
+    ".score small{display:block;font-family:'Outfit';font-weight:600;font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:6px;text-shadow:none;}"
+    ".wdl{display:flex;height:8px;border-radius:6px;overflow:hidden;margin-top:16px;background:rgba(0,0,0,.35);}"
+    ".wdl span{display:block;}.wdl .w{background:linear-gradient(90deg,var(--volt-d),var(--volt));box-shadow:0 0 14px rgba(198,255,58,.5);}.wdl .d{background:var(--draw);}.wdl .l{background:var(--away);}"
+    ".legend{display:flex;justify-content:space-between;margin-top:9px;font-family:'Outfit';font-size:.8rem;color:var(--muted);}"
+    ".legend b{font-weight:700;font-variant-numeric:tabular-nums;}"
+    ".legend .hp b{color:var(--volt);}.legend .ap b{color:var(--away);}.legend .dp b{color:var(--ink);}"
+    ".chips{margin-top:13px;display:flex;gap:8px;flex-wrap:wrap;}"
+    ".chip{font-family:'Outfit';font-size:.76rem;padding:4px 11px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--glassb);color:var(--muted);font-variant-numeric:tabular-nums;}"
     ".chip b{color:var(--ink);font-weight:600;}"
-    ".lb{display:flex;align-items:center;gap:14px;padding:11px 4px;border-bottom:1px solid var(--line);}"
-    ".lb.top{padding-top:14px;padding-bottom:14px;}"
-    ".lb .rk{font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;color:var(--muted);width:26px;text-align:right;font-variant-numeric:tabular-nums;}"
-    ".lb.top .rk{color:var(--accent);}"
-    ".lb .lf{font-size:1.55rem;}"
-    ".lb .nm{flex:1;font-family:'Archivo';font-weight:600;font-size:1.05rem;}"
-    ".lb .track{flex:1.3;height:8px;background:var(--paper);border-radius:5px;overflow:hidden;}"
-    ".lb .fill{height:100%;background:var(--accent);border-radius:5px;}"
-    ".lb .pc{font-family:'Fraunces',serif;font-weight:600;font-size:1.18rem;width:62px;text-align:right;font-variant-numeric:tabular-nums;}"
-    ".stat{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--panel);}"
-    ".stat .label{font-family:'Archivo';text-transform:uppercase;letter-spacing:.13em;color:var(--muted);font-size:.72rem;font-weight:600;}"
-    ".stat .val{font-family:'Fraunces',serif;font-weight:600;font-size:2.2rem;color:var(--ink);line-height:1.05;font-variant-numeric:tabular-nums;}"
-    ".stat .sub{font-family:'Archivo';font-size:.76rem;color:var(--muted);}"
-    "</style>",
+    ".lb{display:flex;align-items:center;gap:15px;padding:13px 16px;margin-bottom:9px;background:var(--glass);border:1px solid var(--glassb);border-radius:14px;backdrop-filter:blur(12px);}"
+    ".lb.top{border-color:rgba(198,255,58,.4);box-shadow:0 0 26px rgba(198,255,58,.12);}"
+    ".lb .rk{font-family:'Syne';font-weight:800;font-size:1.15rem;color:var(--muted);width:30px;text-align:center;font-variant-numeric:tabular-nums;}"
+    ".lb.top .rk{color:var(--volt);text-shadow:0 0 16px rgba(198,255,58,.5);}"
+    ".lb .lf{font-size:1.7rem;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}"
+    ".lb .nm{flex:1;font-family:'Outfit';font-weight:600;font-size:1.08rem;}"
+    ".lb .track{flex:1.25;height:9px;background:rgba(0,0,0,.35);border-radius:6px;overflow:hidden;}"
+    ".lb .fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--volt));border-radius:6px;box-shadow:0 0 14px rgba(198,255,58,.45);}"
+    ".lb .pc{font-family:'Syne';font-weight:800;font-size:1.25rem;color:var(--volt);width:66px;text-align:right;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(198,255,58,.4);}"
+    ".stat{background:var(--glass);border:1px solid var(--glassb);border-radius:16px;padding:16px 18px;backdrop-filter:blur(12px);}"
+    ".stat .label{font-family:'Outfit';text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-size:.72rem;font-weight:600;}"
+    ".stat .val{font-family:'Syne';font-weight:800;font-size:2.3rem;color:var(--volt);line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 0 22px rgba(198,255,58,.4);}"
+    ".stat .sub{font-family:'Outfit';font-size:.76rem;color:var(--muted);}"
+    "</style>"
+    "<div class='bgpitch'><div class='circle'><div class='spot'></div></div></div>",
     unsafe_allow_html=True,
 )
 
@@ -107,14 +122,14 @@ def _load_parquet(name):
     return pd.read_parquet(p) if p.exists() else pd.DataFrame()
 
 
-def _plotly(fig, height=380):
+def _plotly(fig, height=360):
     fig.update_layout(
-        template="plotly_white", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-        font_family="Archivo", font_color="#17171b", margin=dict(l=10, r=10, t=46, b=10),
-        height=height, title_font_family="Fraunces", title_font_size=16,
+        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        font_family="Outfit", font_color="#eafff4", margin=dict(l=10, r=10, t=40, b=10),
+        height=height, title_font_family="Syne", title_font_size=16,
     )
-    fig.update_xaxes(gridcolor="#e4e0d7", zeroline=False)
-    fig.update_yaxes(gridcolor="#e4e0d7", zeroline=False)
+    fig.update_xaxes(gridcolor="rgba(255,255,255,.08)", zeroline=False)
+    fig.update_yaxes(gridcolor="rgba(255,255,255,.08)", zeroline=False)
     return fig
 
 
@@ -125,12 +140,13 @@ if isinstance(updated, str) and "T" in updated:
 bw = meta.get("blend_weight", "—")
 
 st.markdown(
-    f"<div class='eyebrow'>Forecast · updated daily</div>"
-    f"<div class='display'>World Cup 2026 <span class='ital'>Predictor</span></div>"
+    f"<div class='hero'><div class='ghost'>26</div>"
+    f"<div class='eyebrow'>Live forecast · updated daily</div>"
+    f"<div class='display'>WORLD CUP <span class='vt'>2026</span></div>"
     f"<div class='dek'>An Elo · Dixon-Coles · XGBoost ensemble trained on international results, "
-    f"with a Monte-Carlo simulation of the remaining tournament.</div>"
-    f"<div class='rule'></div>"
-    f"<div class='meta'><span>Last updated <b>{updated}</b></span><span>Blend weight <b>{bw}</b></span></div>",
+    f"with a Monte-Carlo simulation of the whole remaining tournament.</div>"
+    f"<div class='meta'><span class='tag'>Updated <b>{updated}</b></span>"
+    f"<span class='tag'>Blend weight <b>{bw}</b></span></div></div>",
     unsafe_allow_html=True,
 )
 st.write("")
@@ -173,7 +189,7 @@ with tab1:
                 f"</div>"
                 f"<div class='legend'>"
                 f"<span class='hp'>{r.home} win <b>{ph:.0%}</b></span>"
-                f"<span>draw <b>{pd_:.0%}</b></span>"
+                f"<span class='dp'>draw <b>{pd_:.0%}</b></span>"
                 f"<span class='ap'><b>{pa:.0%}</b> {r.away} win</span>"
                 f"</div>"
                 f"<div class='chips'>{chips}</div>"
@@ -231,8 +247,8 @@ with tab3:
         nwc = metrics.get("n_wc_finished", "—")
         st.markdown("<div class='sec'>Backtest accuracy</div>", unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
-        c1.markdown(f"<div class='stat'><div class='label'>Log-loss</div><div class='val'>{ll:.3f}</div><div class='sub'>random ≈ 1.10 · lower is better</div></div>", unsafe_allow_html=True)
-        c2.markdown(f"<div class='stat'><div class='label'>Brier</div><div class='val'>{br:.3f}</div><div class='sub'>random ≈ 0.67 · lower is better</div></div>", unsafe_allow_html=True)
+        c1.markdown(f"<div class='stat'><div class='label'>Log-loss</div><div class='val'>{ll:.3f}</div><div class='sub'>random ≈ 1.10 · lower better</div></div>", unsafe_allow_html=True)
+        c2.markdown(f"<div class='stat'><div class='label'>Brier</div><div class='val'>{br:.3f}</div><div class='sub'>random ≈ 0.67 · lower better</div></div>", unsafe_allow_html=True)
         c3.markdown(f"<div class='stat'><div class='label'>Training games</div><div class='val'>{ntr}</div><div class='sub'>{nwc} from WC2026</div></div>", unsafe_allow_html=True)
         st.caption("Metrics are in-sample (training) estimates — a time-series holdout is a planned upgrade.")
 
@@ -242,8 +258,8 @@ with tab3:
         if not calib.empty:
             st.markdown("<div class='sec'>Calibration · home-win</div>", unsafe_allow_html=True)
             fig = px.line(calib, x="mean_pred", y="obs_freq", markers=True)
-            fig.add_shape(type="line", x0=0, y0=0, x1=1, y1=1, line=dict(dash="dot", color="#b8b5ab"))
-            fig.update_traces(line_color="#1f5eff", marker_color="#1f5eff")
+            fig.add_shape(type="line", x0=0, y0=0, x1=1, y1=1, line=dict(dash="dot", color="#7fa896"))
+            fig.update_traces(line_color="#c6ff3a", marker_color="#2ee6b0")
             fig.update_layout(xaxis_title="predicted", yaxis_title="observed")
             fig.update_xaxes(tickformat=".0%")
             fig.update_yaxes(tickformat=".0%")
