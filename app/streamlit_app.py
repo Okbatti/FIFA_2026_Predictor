@@ -35,11 +35,17 @@ _ISO = {
 }
 
 
-def flag(team: str | None) -> str:
-    """Real flag image from flagcdn.com, or a neutral initials badge if unknown."""
+def flag_url(team: str | None) -> str | None:
+    """Flag image URL for st.column_config.ImageColumn (None if unmapped)."""
     code = _ISO.get(team) if isinstance(team, str) else None
-    if code:
-        return f"<img class='fimg' src='https://flagcdn.com/h40/{code}.png' alt='' loading='lazy'>"
+    return f"https://flagcdn.com/h40/{code}.png" if code else None
+
+
+def flag(team: str | None) -> str:
+    """Inline flag <img> for custom HTML blocks, or an initials badge if unknown."""
+    url = flag_url(team)
+    if url:
+        return f"<img class='fimg' src='{url}' alt='' loading='lazy'>"
     initials = (team[:2].upper() if isinstance(team, str) and team else "??")
     return f"<span class='fph'>{initials}</span>"
 
@@ -262,17 +268,19 @@ with tab2:
 
         st.markdown("<div class='sec'>Stage-by-stage probabilities</div>", unsafe_allow_html=True)
         show = cup.copy()
-        show["team"] = show["team"].map(lambda t: f"{flag(t)}  {t}")
+        show["flag"] = show["team"].map(flag_url)
         stage_cols = [c for c in ["R32", "R16", "QF", "SF", "FINAL", "win"] if c in show.columns]
+        show[stage_cols] = show[stage_cols] * 100  # ProgressColumn labels the raw value
         colcfg = {
             c: st.column_config.ProgressColumn(
-                c.upper() if c != "win" else "WIN", format="%.0f%%", min_value=0.0, max_value=1.0
+                c.upper() if c != "win" else "WIN", format="%.0f%%", min_value=0.0, max_value=100.0
             )
             for c in stage_cols
         }
+        colcfg["flag"] = st.column_config.ImageColumn(" ", width="small")
         colcfg["team"] = st.column_config.TextColumn("TEAM")
         st.dataframe(
-            show[["team"] + stage_cols], column_config=colcfg,
+            show[["flag", "team"] + stage_cols], column_config=colcfg,
             hide_index=True, use_container_width=True, height=440,
         )
 
@@ -309,11 +317,13 @@ with tab3:
         st.markdown("<div class='sec'>Team strength rankings</div>", unsafe_allow_html=True)
         rk = rankings.copy()
         rk.insert(0, "rank", range(1, len(rk) + 1))
-        rk["team"] = rk["team"].map(lambda t: f"{flag(t)}  {t}")
+        rk["flag"] = rk["team"].map(flag_url)
+        rk = rk[["rank", "flag", "team", "strength", "elo"]]
         st.dataframe(
             rk, hide_index=True, use_container_width=True, height=420,
             column_config={
                 "rank": st.column_config.NumberColumn("#", width="small"),
+                "flag": st.column_config.ImageColumn(" ", width="small"),
                 "team": st.column_config.TextColumn("TEAM"),
                 "elo": st.column_config.NumberColumn("ELO", format="%.0f"),
                 "strength": st.column_config.NumberColumn("DC STRENGTH", format="%.2f"),
