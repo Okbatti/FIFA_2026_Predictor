@@ -46,93 +46,48 @@ def flag(team: str | None) -> str:
 st.set_page_config(page_title="WC2026 Predictor", page_icon="🏆", layout="wide")
 
 st.markdown(
-    """
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --pitch-0:#02160c; --pitch-1:#063b1f; --pitch-2:#0a5a30;
-  --gold:#FFC400; --gold-soft:#ffe08a; --ink:#EAF4ED; --muted:#8fb6a0;
-  --win:#26d07c; --draw:#5c7868; --loss:#ff6b6b;
-}
-.stApp{
-  background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(255,196,0,.10), transparent 60%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,.020) 0 70px, rgba(0,0,0,0) 70px 140px),
-    linear-gradient(160deg, var(--pitch-0), var(--pitch-1) 55%, #02130a);
-  color:var(--ink);
-  font-family:'Barlow Condensed', sans-serif;
-}
-.block-container{padding-top:1.4rem; max-width:1180px;}
-h1,h2,h3,h4{font-family:'Bebas Neue', sans-serif !important; letter-spacing:.04em; color:var(--ink);}
-
-/* hero */
-.hero{
-  border:1px solid rgba(255,196,0,.35); border-radius:18px; padding:22px 28px;
-  background:linear-gradient(135deg, rgba(10,90,48,.55), rgba(2,22,12,.55));
-  box-shadow:0 18px 50px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.03);
-  position:relative; overflow:hidden;
-}
-.hero:before{content:""; position:absolute; right:-40px; top:-40px; width:180px; height:180px;
-  background:radial-gradient(circle, rgba(255,196,0,.30), transparent 70%); filter:blur(6px);}
-.hero h1{font-size:3.1rem; line-height:.92; margin:0;}
-.hero .accent{color:var(--gold);}
-.hero p{font-family:'Barlow Condensed'; color:var(--muted); margin:.3rem 0 0; font-size:1.05rem; letter-spacing:.06em; text-transform:uppercase;}
-.pill{display:inline-block; margin-top:12px; padding:5px 14px; border-radius:999px;
-  background:rgba(255,196,0,.12); border:1px solid rgba(255,196,0,.4); color:var(--gold-soft);
-  font-size:.82rem; letter-spacing:.08em; text-transform:uppercase;}
-
-/* tabs */
-.stTabs [data-baseweb="tab-list"]{gap:6px; border-bottom:1px solid rgba(255,255,255,.08);}
-.stTabs [data-baseweb="tab"]{
-  font-family:'Bebas Neue'; font-size:1.25rem; letter-spacing:.06em;
-  background:transparent; color:var(--muted); padding:8px 18px;
-}
-.stTabs [aria-selected="true"]{color:var(--gold) !important; border-bottom:3px solid var(--gold);}
-
-/* match card */
-.match{
-  border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px 20px; margin-bottom:14px;
-  background:linear-gradient(180deg, rgba(10,90,48,.30), rgba(2,22,12,.45));
-  box-shadow:0 10px 26px rgba(0,0,0,.35);
-}
-.match .row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
-.match .team{display:flex; align-items:center; gap:10px; flex:1; font-size:1.45rem; font-family:'Barlow Condensed'; font-weight:600;}
-.match .team.away{justify-content:flex-end; text-align:right;}
-.match .flag{font-size:1.9rem; line-height:1;}
-.score{
-  font-family:'Bebas Neue'; font-size:2.5rem; color:var(--gold); min-width:120px; text-align:center;
-  background:rgba(0,0,0,.30); border:1px solid rgba(255,196,0,.35); border-radius:12px; padding:2px 10px;
-  text-shadow:0 0 18px rgba(255,196,0,.35);
-}
-.score small{display:block; font-family:'Barlow Condensed'; font-size:.72rem; color:var(--muted); letter-spacing:.1em; margin-top:-4px;}
-.wdl{display:flex; height:14px; border-radius:8px; overflow:hidden; margin-top:14px; border:1px solid rgba(255,255,255,.08);}
-.wdl span{display:flex; align-items:center; justify-content:center; font-size:.72rem; color:#04140b; font-weight:700;}
-.wdl .w{background:var(--win);} .wdl .d{background:var(--draw); color:var(--ink);} .wdl .l{background:var(--loss);}
-.legend{display:flex; justify-content:space-between; margin-top:6px; font-size:.8rem; color:var(--muted); letter-spacing:.04em;}
-.chips{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;}
-.chip{font-size:.8rem; padding:3px 10px; border-radius:999px; background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.10); color:var(--gold-soft); letter-spacing:.03em;}
-
-/* podium */
-.podium{display:flex; gap:14px; margin:6px 0 18px;}
-.pod{flex:1; border-radius:16px; padding:18px 14px; text-align:center;
-  background:linear-gradient(180deg, rgba(10,90,48,.40), rgba(2,22,12,.55)); border:1px solid rgba(255,255,255,.08);}
-.pod.first{border-color:var(--gold); box-shadow:0 0 30px rgba(255,196,0,.25); transform:translateY(-6px);}
-.pod .rank{font-family:'Bebas Neue'; font-size:1.1rem; color:var(--muted); letter-spacing:.1em;}
-.pod .pflag{font-size:2.8rem;}
-.pod .pname{font-family:'Barlow Condensed'; font-weight:700; font-size:1.35rem; margin-top:4px;}
-.pod .podds{font-family:'Bebas Neue'; font-size:2.6rem; color:var(--gold); text-shadow:0 0 18px rgba(255,196,0,.35);}
-.pod.first .podds{font-size:3.2rem;}
-
-/* stat cards */
-.stat{border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px 18px;
-  background:linear-gradient(180deg, rgba(10,90,48,.30), rgba(2,22,12,.45));}
-.stat .label{font-family:'Barlow Condensed'; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); font-size:.82rem;}
-.stat .val{font-family:'Bebas Neue'; font-size:2.6rem; color:var(--gold); line-height:1;}
-.stat .sub{font-size:.8rem; color:var(--muted);}
-hr{border-color:rgba(255,255,255,.08);}
-</style>
-""",
+    "<link href='https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&display=swap' rel='stylesheet'>"
+    "<style>"
+    ":root{--pitch-0:#02160c;--pitch-1:#063b1f;--gold:#FFC400;--gold-soft:#ffe08a;--ink:#EAF4ED;--muted:#8fb6a0;--win:#26d07c;--draw:#5c7868;--loss:#ff6b6b;}"
+    ".stApp{background:radial-gradient(1200px 600px at 80% -10%,rgba(255,196,0,.10),transparent 60%),repeating-linear-gradient(90deg,rgba(255,255,255,.020) 0 70px,rgba(0,0,0,0) 70px 140px),linear-gradient(160deg,var(--pitch-0),var(--pitch-1) 55%,#02130a);color:var(--ink);font-family:'Barlow Condensed',sans-serif;}"
+    ".block-container{padding-top:1.4rem;max-width:1180px;}"
+    "h1,h2,h3,h4{font-family:'Bebas Neue',sans-serif !important;letter-spacing:.04em;color:var(--ink);}"
+    ".hero{border:1px solid rgba(255,196,0,.35);border-radius:18px;padding:22px 28px;background:linear-gradient(135deg,rgba(10,90,48,.55),rgba(2,22,12,.55));box-shadow:0 18px 50px rgba(0,0,0,.45);position:relative;overflow:hidden;}"
+    ".hero:before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,196,0,.30),transparent 70%);filter:blur(6px);}"
+    ".hero h1{font-size:3.1rem;line-height:.92;margin:0;}"
+    ".hero .accent{color:var(--gold);}"
+    ".hero p{font-family:'Barlow Condensed';color:var(--muted);margin:.3rem 0 0;font-size:1.05rem;letter-spacing:.06em;text-transform:uppercase;}"
+    ".pill{display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(255,196,0,.12);border:1px solid rgba(255,196,0,.4);color:var(--gold-soft);font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;}"
+    ".stTabs [data-baseweb='tab-list']{gap:6px;border-bottom:1px solid rgba(255,255,255,.08);}"
+    ".stTabs [data-baseweb='tab']{font-family:'Bebas Neue';font-size:1.25rem;letter-spacing:.06em;background:transparent;color:var(--muted);padding:8px 18px;}"
+    ".stTabs [aria-selected='true']{color:var(--gold) !important;border-bottom:3px solid var(--gold);}"
+    ".match{border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px 20px;margin-bottom:14px;background:linear-gradient(180deg,rgba(10,90,48,.30),rgba(2,22,12,.45));box-shadow:0 10px 26px rgba(0,0,0,.35);}"
+    ".match .row{display:flex;align-items:center;justify-content:space-between;gap:10px;}"
+    ".match .team{display:flex;align-items:center;gap:10px;flex:1;font-size:1.45rem;font-family:'Barlow Condensed';font-weight:600;}"
+    ".match .team.away{justify-content:flex-end;text-align:right;}"
+    ".match .flag{font-size:1.9rem;line-height:1;}"
+    ".score{font-family:'Bebas Neue';font-size:2.5rem;color:var(--gold);min-width:120px;text-align:center;background:rgba(0,0,0,.30);border:1px solid rgba(255,196,0,.35);border-radius:12px;padding:2px 10px;text-shadow:0 0 18px rgba(255,196,0,.35);}"
+    ".score small{display:block;font-family:'Barlow Condensed';font-size:.72rem;color:var(--muted);letter-spacing:.1em;margin-top:-4px;}"
+    ".wdl{display:flex;height:16px;border-radius:8px;overflow:hidden;margin-top:14px;border:1px solid rgba(255,255,255,.08);}"
+    ".wdl span{display:flex;align-items:center;justify-content:center;font-size:.72rem;color:#04140b;font-weight:700;}"
+    ".wdl .w{background:var(--win);}.wdl .d{background:var(--draw);color:var(--ink);}.wdl .l{background:var(--loss);}"
+    ".legend{display:flex;justify-content:space-between;margin-top:6px;font-size:.8rem;color:var(--muted);letter-spacing:.04em;}"
+    ".chips{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}"
+    ".chip{font-size:.8rem;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);color:var(--gold-soft);letter-spacing:.03em;}"
+    ".podium{display:flex;gap:14px;margin:6px 0 18px;}"
+    ".pod{flex:1;border-radius:16px;padding:18px 14px;text-align:center;background:linear-gradient(180deg,rgba(10,90,48,.40),rgba(2,22,12,.55));border:1px solid rgba(255,255,255,.08);}"
+    ".pod.first{border-color:var(--gold);box-shadow:0 0 30px rgba(255,196,0,.25);transform:translateY(-6px);}"
+    ".pod .rank{font-family:'Bebas Neue';font-size:1.1rem;color:var(--muted);letter-spacing:.1em;}"
+    ".pod .pflag{font-size:2.8rem;}"
+    ".pod .pname{font-family:'Barlow Condensed';font-weight:700;font-size:1.35rem;margin-top:4px;}"
+    ".pod .podds{font-family:'Bebas Neue';font-size:2.6rem;color:var(--gold);text-shadow:0 0 18px rgba(255,196,0,.35);}"
+    ".pod.first .podds{font-size:3.2rem;}"
+    ".stat{border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px 18px;background:linear-gradient(180deg,rgba(10,90,48,.30),rgba(2,22,12,.45));}"
+    ".stat .label{font-family:'Barlow Condensed';text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-size:.82rem;}"
+    ".stat .val{font-family:'Bebas Neue';font-size:2.6rem;color:var(--gold);line-height:1;}"
+    ".stat .sub{font-size:.8rem;color:var(--muted);}"
+    "hr{border-color:rgba(255,255,255,.08);}"
+    "</style>",
     unsafe_allow_html=True,
 )
 
