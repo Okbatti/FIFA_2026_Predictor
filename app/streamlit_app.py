@@ -84,7 +84,7 @@ st.markdown(
     ".bgpitch .circle{width:560px;height:560px;border:2px solid var(--ink);border-radius:50%;position:relative;}"
     ".bgpitch .circle:before{content:'';position:absolute;left:50%;top:-100vh;width:2px;height:300vh;background:var(--ink);transform:translateX(-50%);}"
     ".bgpitch .spot{width:14px;height:14px;background:var(--ink);border-radius:50%;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);}"
-    "[data-testid='stMain'] .block-container{position:relative;z-index:2;max-width:900px;margin:0 auto;padding-top:2.2rem;}"
+    "[data-testid='stMain'] .block-container{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding-top:2.2rem;}"
     "h1,h2,h3,h4{font-family:'Syne',sans-serif !important;color:var(--ink);letter-spacing:-.01em;}"
     "#MainMenu,header,footer{visibility:hidden;}"
     ".hero{position:relative;overflow:hidden;border-radius:22px;padding:30px 30px 26px;background:linear-gradient(135deg,rgba(46,230,176,.10),rgba(108,140,255,.06));border:1px solid var(--glassb);backdrop-filter:blur(8px);}"
@@ -100,39 +100,49 @@ st.markdown(
     ".stTabs [data-baseweb='tab-list']{gap:8px;border-bottom:1px solid var(--glassb);}"
     ".stTabs [data-baseweb='tab']{font-family:'Syne';font-weight:700;font-size:.92rem;letter-spacing:.02em;color:var(--muted);background:transparent;padding:7px 4px;}"
     ".stTabs [aria-selected='true']{color:var(--volt) !important;border-bottom:2px solid var(--volt);}"
-    ".match{background:var(--glass);border:1px solid var(--glassb);border-radius:18px;padding:18px 22px;margin-bottom:14px;backdrop-filter:blur(14px) saturate(1.15);box-shadow:0 14px 40px rgba(0,0,0,.45);transition:transform .15s ease,border-color .15s ease;}"
+    ".match{background:var(--glass);border:1px solid var(--glassb);border-radius:20px;padding:24px 30px;margin-bottom:16px;backdrop-filter:blur(14px) saturate(1.15);box-shadow:0 14px 40px rgba(0,0,0,.45);transition:transform .15s ease,border-color .15s ease;}"
     ".match:hover{transform:translateY(-2px);border-color:rgba(198,255,58,.35);}"
-    ".match .row{display:flex;align-items:center;justify-content:space-between;gap:12px;}"
-    ".match .team{display:flex;align-items:center;gap:12px;flex:1;font-family:'Outfit';font-weight:600;font-size:1.2rem;}"
+    ".match .row{display:flex;align-items:center;justify-content:space-between;gap:14px;}"
+    ".match .team{display:flex;align-items:center;gap:14px;flex:1;font-family:'Outfit';font-weight:600;font-size:1.38rem;}"
     ".match .team.away{justify-content:flex-end;text-align:right;}"
-    ".match .flag{font-size:1.85rem;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}"
-    ".score{font-family:'Syne',sans-serif;font-weight:800;font-size:2.3rem;min-width:108px;text-align:center;color:var(--volt);font-variant-numeric:tabular-nums;text-shadow:0 0 26px rgba(198,255,58,.45);line-height:1;}"
-    ".score small{display:block;font-family:'Outfit';font-weight:600;font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:6px;text-shadow:none;}"
-    ".wdl{display:flex;height:8px;border-radius:6px;overflow:hidden;margin-top:16px;background:rgba(0,0,0,.35);}"
+    ".match .flag{font-size:2.1rem;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}"
+    ".score{font-family:'Syne',sans-serif;font-weight:800;font-size:2.9rem;min-width:138px;text-align:center;color:var(--volt);font-variant-numeric:tabular-nums;text-shadow:0 0 26px rgba(198,255,58,.45);line-height:1;}"
+    ".score small{display:block;font-family:'Outfit';font-weight:600;font-size:.66rem;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:7px;text-shadow:none;}"
+    ".wdl{display:flex;height:11px;border-radius:6px;overflow:hidden;margin-top:18px;background:rgba(0,0,0,.35);}"
     ".wdl span{display:block;}.wdl .w{background:linear-gradient(90deg,var(--volt-d),var(--volt));box-shadow:0 0 14px rgba(198,255,58,.5);}.wdl .d{background:var(--draw);}.wdl .l{background:var(--away);}"
-    ".legend{display:flex;justify-content:space-between;margin-top:9px;font-family:'Outfit';font-size:.8rem;color:var(--muted);}"
+    ".legend{display:flex;justify-content:space-between;margin-top:11px;font-family:'Outfit';font-size:.92rem;color:var(--muted);}"
     ".legend b{font-weight:700;font-variant-numeric:tabular-nums;}"
     ".legend .hp b{color:var(--volt);}.legend .ap b{color:var(--away);}.legend .dp b{color:var(--ink);}"
-    ".chips{margin-top:13px;display:flex;gap:8px;flex-wrap:wrap;}"
-    ".chip{font-family:'Outfit';font-size:.76rem;padding:4px 11px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--glassb);color:var(--muted);font-variant-numeric:tabular-nums;}"
+    ".chips{margin-top:15px;display:flex;gap:9px;flex-wrap:wrap;}"
+    ".chip{font-family:'Outfit';font-size:.85rem;padding:5px 13px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--glassb);color:var(--muted);font-variant-numeric:tabular-nums;}"
     ".chip b{color:var(--ink);font-weight:600;}"
-    ".lb{display:flex;align-items:center;gap:15px;padding:13px 16px;margin-bottom:9px;background:var(--glass);border:1px solid var(--glassb);border-radius:14px;backdrop-filter:blur(12px);}"
+    ".lb{display:flex;align-items:center;gap:18px;padding:17px 22px;margin-bottom:11px;background:var(--glass);border:1px solid var(--glassb);border-radius:14px;backdrop-filter:blur(12px);}"
     ".lb.top{border-color:rgba(198,255,58,.4);box-shadow:0 0 26px rgba(198,255,58,.12);}"
-    ".lb .rk{font-family:'Syne';font-weight:800;font-size:1.15rem;color:var(--muted);width:30px;text-align:center;font-variant-numeric:tabular-nums;}"
+    ".lb .rk{font-family:'Syne';font-weight:800;font-size:1.35rem;color:var(--muted);width:34px;text-align:center;font-variant-numeric:tabular-nums;}"
     ".lb.top .rk{color:var(--volt);text-shadow:0 0 16px rgba(198,255,58,.5);}"
-    ".lb .lf{font-size:1.7rem;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}"
-    ".lb .nm{flex:1;font-family:'Outfit';font-weight:600;font-size:1.08rem;}"
-    ".lb .track{flex:1.25;height:9px;background:rgba(0,0,0,.35);border-radius:6px;overflow:hidden;}"
+    ".lb .lf{font-size:1.95rem;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}"
+    ".lb .nm{flex:1;font-family:'Outfit';font-weight:600;font-size:1.22rem;}"
+    ".lb .track{flex:1.25;height:11px;background:rgba(0,0,0,.35);border-radius:6px;overflow:hidden;}"
     ".lb .fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--volt));border-radius:6px;box-shadow:0 0 14px rgba(198,255,58,.45);}"
-    ".lb .pc{font-family:'Syne';font-weight:800;font-size:1.25rem;color:var(--volt);width:66px;text-align:right;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(198,255,58,.4);}"
-    ".stat{background:var(--glass);border:1px solid var(--glassb);border-radius:16px;padding:16px 18px;backdrop-filter:blur(12px);}"
-    ".stat .label{font-family:'Outfit';text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-size:.72rem;font-weight:600;}"
-    ".stat .val{font-family:'Syne';font-weight:800;font-size:2.3rem;color:var(--volt);line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 0 22px rgba(198,255,58,.4);}"
+    ".lb .pc{font-family:'Syne';font-weight:800;font-size:1.5rem;color:var(--volt);width:78px;text-align:right;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(198,255,58,.4);}"
+    ".stat{background:var(--glass);border:1px solid var(--glassb);border-radius:16px;padding:20px 22px;backdrop-filter:blur(12px);}"
+    ".stat .label{font-family:'Outfit';text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-size:.76rem;font-weight:600;}"
+    ".stat .val{font-family:'Syne';font-weight:800;font-size:2.8rem;color:var(--volt);line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 0 22px rgba(198,255,58,.4);}"
     ".stat .sub{font-family:'Outfit';font-size:.76rem;color:var(--muted);}"
-    ".fimg{height:24px;width:auto;border-radius:3px;box-shadow:0 2px 8px rgba(0,0,0,.55);display:inline-block;vertical-align:middle;}"
-    ".lb .lf .fimg{height:28px;}"
+    ".fimg{height:28px;width:auto;border-radius:3px;box-shadow:0 2px 8px rgba(0,0,0,.55);display:inline-block;vertical-align:middle;}"
+    ".lb .lf .fimg{height:34px;}"
     ".fph{display:inline-flex;align-items:center;justify-content:center;width:34px;height:24px;border-radius:3px;background:rgba(255,255,255,.10);border:1px solid var(--glassb);font-family:'Outfit';font-weight:700;font-size:.7rem;color:var(--muted);vertical-align:middle;}"
-    ".rail{position:fixed;top:0;bottom:0;width:clamp(0px,calc((100vw - 960px)/2),330px);z-index:1;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:46px 0;overflow:hidden;}"
+    ".grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}"
+    "@media(max-width:760px){.grid3{grid-template-columns:1fr;}}"
+    ".pcard{background:var(--glass);border:1px solid var(--glassb);border-radius:16px;padding:20px 18px;backdrop-filter:blur(12px);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.35);}"
+    ".pcard .pdate{font-family:'Outfit';font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);}"
+    ".pcard .pteam{display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Outfit';font-weight:600;font-size:1.08rem;margin:7px 0;}"
+    ".pcard .pteam .fimg{height:24px;}.pcard .pteam .fph{width:32px;height:22px;font-size:.66rem;}"
+    ".pcard .psc{font-family:'Syne';font-weight:800;font-size:2.3rem;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.06em;margin:4px 0;}"
+    ".pcard .ppred{margin-top:12px;font-family:'Outfit';font-size:.84rem;color:var(--muted);border-top:1px solid var(--glassb);padding-top:11px;}"
+    ".pcard .ppred b{color:var(--ink);font-variant-numeric:tabular-nums;}"
+    ".pcard .hit{color:var(--volt);font-weight:700;}.pcard .miss{color:var(--away);font-weight:700;}"
+    ".rail{position:fixed;top:0;bottom:0;width:clamp(0px,calc((100vw - 1440px)/2),280px);z-index:1;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:46px 0;overflow:hidden;}"
     ".rail.l{left:0;}.rail.r{right:0;}"
     ".rail .glyph{filter:drop-shadow(0 0 22px rgba(198,255,58,.35));opacity:.9;}"
     ".rail .glyph svg{width:48px;height:48px;}"
@@ -143,7 +153,7 @@ st.markdown(
     ".rail .hosts{font-size:1.5rem;letter-spacing:4px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}"
     ".rail .lab{font-family:'Outfit';font-weight:600;text-transform:uppercase;letter-spacing:.2em;font-size:.64rem;color:var(--muted);}"
     ".rail .stat2{font-family:'Syne';font-weight:800;font-size:1.5rem;color:rgba(234,255,244,.55);text-align:center;line-height:1;}"
-    "@media(max-width:1100px){.rail{display:none;}}"
+    "@media(max-width:1480px){.rail{display:none;}}"
     "</style>"
     "<div class='bgpitch'><div class='circle'><div class='spot'></div></div></div>"
     "<div class='rail l'><div class='glyph'>" + _TROPHY + "</div>"
@@ -196,7 +206,7 @@ st.markdown(
 )
 st.write("")
 
-tab1, tab2, tab3 = st.tabs(["Next Games", "Cup Odds", "Model Report"])
+tabp, tab1, tab2, tab3 = st.tabs(["Previous Games", "Next Games", "Cup Odds", "Model Report"])
 
 
 def _parse_top(top_scores: str):
@@ -206,6 +216,44 @@ def _parse_top(top_scores: str):
             sc, p = part.split(":")
             out.append((sc.strip(), float(p)))
     return out
+
+
+def _outcome(h, a):
+    return "home" if h > a else ("away" if a > h else "draw")
+
+
+# ---------------------------------------------------------------- Previous Games
+with tabp:
+    prev = _load_parquet("prev_games.parquet")
+    if prev.empty:
+        st.info("Played games appear here once the tournament is under way.")
+    else:
+        hits = sum(
+            _outcome(r.actual_home, r.actual_away)
+            == max((("home", r.p_home), ("draw", r.p_draw), ("away", r.p_away)), key=lambda x: x[1])[0]
+            for r in prev.itertuples()
+        )
+        st.markdown(
+            f"<div class='sec'>Played · {len(prev)} games · outcome called right "
+            f"<b style='color:var(--volt)'>{hits}/{len(prev)}</b></div>",
+            unsafe_allow_html=True,
+        )
+        cards = []
+        for r in prev.itertuples():
+            pred_o = max((("home", r.p_home), ("draw", r.p_draw), ("away", r.p_away)), key=lambda x: x[1])[0]
+            ok = pred_o == _outcome(r.actual_home, r.actual_away)
+            badge = "<span class='hit'>✓ called</span>" if ok else "<span class='miss'>✗ missed</span>"
+            date = r.date.strftime("%d %b") if hasattr(r.date, "strftime") else ""
+            cards.append(
+                f"<div class='pcard'>"
+                f"<div class='pdate'>{date}</div>"
+                f"<div class='pteam'>{flag(r.home)}<span>{r.home}</span></div>"
+                f"<div class='psc'>{r.actual_home} – {r.actual_away}</div>"
+                f"<div class='pteam'>{flag(r.away)}<span>{r.away}</span></div>"
+                f"<div class='ppred'>predicted <b>{r.pred_home}–{r.pred_away}</b> · {badge}</div>"
+                f"</div>"
+            )
+        st.markdown(f"<div class='grid3'>{''.join(cards)}</div>", unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------- Next Games
