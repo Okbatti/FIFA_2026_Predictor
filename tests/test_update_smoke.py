@@ -25,8 +25,14 @@ def test_pipeline_writes_artifacts(tmp_path, monkeypatch):
     assert (tmp_path / "metrics.json").exists()
     assert (tmp_path / "cup_odds.parquet").exists()
     assert (tmp_path / "next_games.parquet").exists()
+    assert (tmp_path / "prev_games.parquet").exists()
     assert (tmp_path / "meta.json").exists()
     assert "log_loss" in artifacts["metrics"]
+    # finished games get a predicted scoreline next to the actual result
+    prev = artifacts["prev_games"]
+    assert len(prev) > 0
+    for col in ["actual_home", "actual_away", "pred_home", "pred_away"]:
+        assert col in prev.columns
 
 def test_pipeline_handles_object_dtype_dates(tmp_path, monkeypatch):
     # Live data merged with an empty results.csv frame can leave date as object dtype;

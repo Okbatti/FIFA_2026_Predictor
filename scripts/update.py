@@ -118,6 +118,30 @@ def run_pipeline(
         })
     next_df = pd.DataFrame(next_rows)
 
+    # previous games: the model's predicted scoreline for each finished WC2026
+    # game alongside the actual result (the running track record).
+    prev_rows = []
+    for r in wc_finished.sort_values("date").itertuples():
+        lh, la = predict_blended(r.home, r.away, best_w)
+        g = score_grid(lh, la, rho=dc.rho)
+        p = outcome_probs(g)
+        (ph_g, pa_g), _ = top_scorelines(g, 1)[0]
+        prev_rows.append({
+            "date": r.date,
+            "home": r.home,
+            "away": r.away,
+            "actual_home": int(r.home_goals),
+            "actual_away": int(r.away_goals),
+            "pred_home": int(ph_g),
+            "pred_away": int(pa_g),
+            "p_home": p["home"],
+            "p_draw": p["draw"],
+            "p_away": p["away"],
+        })
+    prev_df = pd.DataFrame(prev_rows)
+    if not prev_df.empty:
+        prev_df = prev_df.sort_values("date", ascending=False).reset_index(drop=True)
+
     # cup odds: full-tournament Monte Carlo from the current state (simulate the
     # remaining group games, qualification, then the knockout bracket). Returns
     # {} when the data lacks a 12-group structure (e.g. synthetic test data).
@@ -137,6 +161,7 @@ def run_pipeline(
 
     config.ARTIFACTS.mkdir(parents=True, exist_ok=True)
     next_df.to_parquet(config.ARTIFACTS / "next_games.parquet")
+    prev_df.to_parquet(config.ARTIFACTS / "prev_games.parquet")
     cup_df.to_parquet(config.ARTIFACTS / "cup_odds.parquet")
     rankings.to_parquet(config.ARTIFACTS / "rankings.parquet")
     (config.ARTIFACTS / "metrics.json").write_text(
@@ -152,7 +177,7 @@ def run_pipeline(
         )
     )
 
-    return {"metrics": metrics, "next_games": next_df, "cup_odds": cup_df}
+    return {"metrics": metrics, "next_games": next_df, "prev_games": prev_df, "cup_odds": cup_df}
 
 
 def main():

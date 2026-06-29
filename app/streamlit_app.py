@@ -132,6 +132,16 @@ st.markdown(
     ".fimg{height:24px;width:auto;border-radius:3px;box-shadow:0 2px 8px rgba(0,0,0,.55);display:inline-block;vertical-align:middle;}"
     ".lb .lf .fimg{height:28px;}"
     ".fph{display:inline-flex;align-items:center;justify-content:center;width:34px;height:24px;border-radius:3px;background:rgba(255,255,255,.10);border:1px solid var(--glassb);font-family:'Outfit';font-weight:700;font-size:.7rem;color:var(--muted);vertical-align:middle;}"
+    ".grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}"
+    "@media(max-width:760px){.grid3{grid-template-columns:1fr;}}"
+    ".pcard{background:var(--glass);border:1px solid var(--glassb);border-radius:14px;padding:13px 12px;backdrop-filter:blur(12px);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.35);}"
+    ".pcard .pdate{font-family:'Outfit';font-size:.64rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);}"
+    ".pcard .pteam{display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Outfit';font-weight:600;font-size:.92rem;margin:4px 0;}"
+    ".pcard .pteam .fimg{height:18px;}.pcard .pteam .fph{width:26px;height:18px;font-size:.6rem;}"
+    ".pcard .psc{font-family:'Syne';font-weight:800;font-size:1.7rem;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.06em;margin:2px 0;}"
+    ".pcard .ppred{margin-top:9px;font-family:'Outfit';font-size:.74rem;color:var(--muted);border-top:1px solid var(--glassb);padding-top:8px;}"
+    ".pcard .ppred b{color:var(--ink);font-variant-numeric:tabular-nums;}"
+    ".pcard .hit{color:var(--volt);font-weight:700;}.pcard .miss{color:var(--away);font-weight:700;}"
     ".rail{position:fixed;top:0;bottom:0;width:clamp(0px,calc((100vw - 960px)/2),330px);z-index:1;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:46px 0;overflow:hidden;}"
     ".rail.l{left:0;}.rail.r{right:0;}"
     ".rail .glyph{filter:drop-shadow(0 0 22px rgba(198,255,58,.35));opacity:.9;}"
@@ -196,7 +206,7 @@ st.markdown(
 )
 st.write("")
 
-tab1, tab2, tab3 = st.tabs(["Next Games", "Cup Odds", "Model Report"])
+tabp, tab1, tab2, tab3 = st.tabs(["Previous Games", "Next Games", "Cup Odds", "Model Report"])
 
 
 def _parse_top(top_scores: str):
@@ -206,6 +216,44 @@ def _parse_top(top_scores: str):
             sc, p = part.split(":")
             out.append((sc.strip(), float(p)))
     return out
+
+
+def _outcome(h, a):
+    return "home" if h > a else ("away" if a > h else "draw")
+
+
+# ---------------------------------------------------------------- Previous Games
+with tabp:
+    prev = _load_parquet("prev_games.parquet")
+    if prev.empty:
+        st.info("Played games appear here once the tournament is under way.")
+    else:
+        hits = sum(
+            _outcome(r.actual_home, r.actual_away)
+            == max((("home", r.p_home), ("draw", r.p_draw), ("away", r.p_away)), key=lambda x: x[1])[0]
+            for r in prev.itertuples()
+        )
+        st.markdown(
+            f"<div class='sec'>Played · {len(prev)} games · outcome called right "
+            f"<b style='color:var(--volt)'>{hits}/{len(prev)}</b></div>",
+            unsafe_allow_html=True,
+        )
+        cards = []
+        for r in prev.itertuples():
+            pred_o = max((("home", r.p_home), ("draw", r.p_draw), ("away", r.p_away)), key=lambda x: x[1])[0]
+            ok = pred_o == _outcome(r.actual_home, r.actual_away)
+            badge = "<span class='hit'>✓ called</span>" if ok else "<span class='miss'>✗ missed</span>"
+            date = r.date.strftime("%d %b") if hasattr(r.date, "strftime") else ""
+            cards.append(
+                f"<div class='pcard'>"
+                f"<div class='pdate'>{date}</div>"
+                f"<div class='pteam'>{flag(r.home)}<span>{r.home}</span></div>"
+                f"<div class='psc'>{r.actual_home} – {r.actual_away}</div>"
+                f"<div class='pteam'>{flag(r.away)}<span>{r.away}</span></div>"
+                f"<div class='ppred'>predicted <b>{r.pred_home}–{r.pred_away}</b> · {badge}</div>"
+                f"</div>"
+            )
+        st.markdown(f"<div class='grid3'>{''.join(cards)}</div>", unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------- Next Games
