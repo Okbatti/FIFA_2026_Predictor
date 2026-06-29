@@ -71,7 +71,7 @@ date,home,away,home_goals,away_goals,neutral,stage,status,group
 2026-06-27 23:30:00+00:00,Colombia,Portugal,0.0,0.0,True,GROUP_STAGE,FINISHED,GROUP_K
 2026-06-28 02:00:00+00:00,Algeria,Austria,3.0,3.0,True,GROUP_STAGE,FINISHED,GROUP_J
 2026-06-28 02:00:00+00:00,Jordan,Argentina,1.0,3.0,True,GROUP_STAGE,FINISHED,GROUP_J
-2026-06-28 19:00:00+00:00,South Africa,Canada,,,True,LAST_32,TIMED,
+2026-06-28 19:00:00+00:00,South Africa,Canada,0.0,1.0,True,LAST_32,FINISHED,
 2026-06-28 19:00:00+00:00,,,,,True,LAST_32,TIMED,
 2026-06-29 17:00:00+00:00,Brazil,Japan,,,True,LAST_32,TIMED,
 2026-06-29 17:00:00+00:00,,,,,True,LAST_32,TIMED,
@@ -85,8 +85,8 @@ date,home,away,home_goals,away_goals,neutral,stage,status,group
 2026-06-30 17:00:00+00:00,Ivory Coast,,,,True,LAST_32,TIMED,
 2026-06-30 21:00:00+00:00,,,,,True,LAST_32,TIMED,
 2026-06-30 21:00:00+00:00,France,Sweden,,,True,LAST_32,TIMED,
-2026-07-01 01:00:00+00:00,Mexico,,,,True,LAST_32,TIMED,
 2026-07-01 01:00:00+00:00,,,,,True,LAST_32,TIMED,
+2026-07-01 01:00:00+00:00,Mexico,,,,True,LAST_32,TIMED,
 2026-07-01 01:00:00+00:00,Mexico,Ecuador,,,True,LAST_32,TIMED,
 2026-07-01 16:00:00+00:00,England,Congo DR,,,True,LAST_32,TIMED,
 2026-07-01 16:00:00+00:00,,,,,True,LAST_32,TIMED,
@@ -101,9 +101,9 @@ date,home,away,home_goals,away_goals,neutral,stage,status,group
 2026-07-03 03:00:00+00:00,,,,,True,LAST_32,TIMED,
 2026-07-03 03:00:00+00:00,Switzerland,Algeria,,,True,LAST_32,TIMED,
 2026-07-03 03:00:00+00:00,Switzerland,,,,True,LAST_32,TIMED,
-2026-07-03 18:00:00+00:00,Australia,,,,True,LAST_32,TIMED,
-2026-07-03 18:00:00+00:00,Australia,Egypt,,,True,LAST_32,TIMED,
 2026-07-03 18:00:00+00:00,,,,,True,LAST_32,TIMED,
+2026-07-03 18:00:00+00:00,Australia,Egypt,,,True,LAST_32,TIMED,
+2026-07-03 18:00:00+00:00,Australia,,,,True,LAST_32,TIMED,
 2026-07-03 22:00:00+00:00,Argentina,,,,True,LAST_32,TIMED,
 2026-07-03 22:00:00+00:00,,,,,True,LAST_32,TIMED,
 2026-07-03 22:00:00+00:00,Argentina,Cape Verde Islands,,,True,LAST_32,TIMED,
